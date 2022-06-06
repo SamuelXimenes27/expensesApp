@@ -1,5 +1,8 @@
-import 'package:expenses/app/shared/strings/all_strings.dart';
 import 'package:flutter/material.dart';
+
+import '../../shared/components/card_expense_graph.dart';
+import '../../shared/components/card_expense_list.dart';
+import '../../shared/strings/all_strings.dart';
 
 class ExpenseHomePage extends StatelessWidget {
   const ExpenseHomePage({Key? key}) : super(key: key);
@@ -16,6 +19,14 @@ class ExpenseHomePage extends StatelessWidget {
               onPressed: () {},
               icon: const Icon(Icons.add),
             ),
+          ],
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ExpenseCardGraph(),
+            ExpenseCardList(),
           ],
         ),
       ),
