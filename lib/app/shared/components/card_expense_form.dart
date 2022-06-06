@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-
-import '../../models/transactions.dart';
+import 'package:intl/intl.dart';
 
 class ExpenseCardForm extends StatefulWidget {
-  final void Function(String, double) onSubmit;
+  final void Function(String, double, DateTime) onSubmit;
 
   const ExpenseCardForm({
     Key? key,
@@ -19,7 +18,7 @@ class _ExpenseCardFormState extends State<ExpenseCardForm> {
 
   final valueController = TextEditingController();
 
-  var transactionsList = Transactions();
+  DateTime? _selectedDate;
 
   _submitForm() {
     final title = titleController.text;
@@ -29,7 +28,24 @@ class _ExpenseCardFormState extends State<ExpenseCardForm> {
       return;
     }
 
-    widget.onSubmit(title, value);
+    widget.onSubmit(title, value, _selectedDate!);
+  }
+
+  _showDatePicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2021),
+      lastDate: DateTime.now(),
+    ).then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+
+      setState(() {
+        _selectedDate = pickedDate;
+      });
+    });
   }
 
   @override
@@ -51,6 +67,29 @@ class _ExpenseCardFormState extends State<ExpenseCardForm> {
               keyboardType: TextInputType.number,
               onSubmitted: (_) => _submitForm(),
             ),
+            SizedBox(
+              height: 70,
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      _selectedDate == null
+                          ? 'Nenhuma data selecionada!'
+                          : 'Data Selecionada: ${DateFormat('dd/MM/y').format(_selectedDate!)}',
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: _showDatePicker,
+                    child: const Text(
+                      'Selecionar Data',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
@@ -58,7 +97,6 @@ class _ExpenseCardFormState extends State<ExpenseCardForm> {
                   onPressed: _submitForm,
                   child: const Text(
                     'Nova Transaçao',
-                    style: TextStyle(color: Colors.purple),
                   ),
                 ),
               ],
