@@ -1,11 +1,21 @@
+import 'package:expenses/app/shared/components/transaction_user.dart';
 import 'package:flutter/material.dart';
 
 import '../../shared/components/card_expense_graph.dart';
-import '../../shared/components/card_expense_list.dart';
 import '../../shared/strings/all_strings.dart';
 
-class ExpenseHomePage extends StatelessWidget {
+class ExpenseHomePage extends StatefulWidget {
   const ExpenseHomePage({Key? key}) : super(key: key);
+
+  @override
+  State<ExpenseHomePage> createState() => _ExpenseHomePageState();
+}
+
+class _ExpenseHomePageState extends State<ExpenseHomePage> {
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +32,11 @@ class ExpenseHomePage extends StatelessWidget {
           ],
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+          // mainAxisAlignment: MainAxisAlignment.spaceAround,
+          // crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: const [
             ExpenseCardGraph(),
-            ExpenseCardList(),
+            TransactionUser(),
           ],
         ),
       ),

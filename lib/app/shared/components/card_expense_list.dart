@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import '../../models/transactions.dart';
+import '../../models/transaction.dart';
 
 class ExpenseCardList extends StatelessWidget {
-  const ExpenseCardList({Key? key}) : super(key: key);
+  final List<Transaction> transactions;
+  const ExpenseCardList({Key? key, required this.transactions})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _size = MediaQuery.of(context).size;
-    var transactionsList = Transactions();
 
     return Center(
         child: Column(
-      children: transactionsList.transactions.map((tr) {
+      children: transactions.map((tr) {
         return Card(
           child: Row(children: [
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Colors.black,
+                  color: Colors.purple,
                   width: 2,
                 ),
               ),
               padding: const EdgeInsets.all(10),
               child: Text(
-                tr.value.toString(),
+                "R\$" + tr.value.toStringAsFixed(2),
                 style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -43,7 +45,7 @@ class ExpenseCardList extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  tr.date.toString(),
+                  DateFormat('d MMM y').format(tr.date),
                   style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
