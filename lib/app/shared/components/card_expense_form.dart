@@ -1,6 +1,3 @@
-import 'dart:math';
-
-import 'package:expenses/app/models/transaction.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/transactions.dart';
@@ -18,13 +15,25 @@ class ExpenseCardForm extends StatefulWidget {
 }
 
 class _ExpenseCardFormState extends State<ExpenseCardForm> {
+  final titleController = TextEditingController();
+
+  final valueController = TextEditingController();
+
+  var transactionsList = Transactions();
+
+  _submitForm() {
+    final title = titleController.text;
+    final value = double.tryParse(valueController.text) ?? 0.0;
+
+    if (title.isEmpty || value <= 0) {
+      return;
+    }
+
+    widget.onSubmit(title, value);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final titleController = TextEditingController();
-    final valueController = TextEditingController();
-
-    var transactionsList = Transactions();
-
     return Card(
       elevation: 5,
       child: Padding(
@@ -34,20 +43,19 @@ class _ExpenseCardFormState extends State<ExpenseCardForm> {
             TextField(
               decoration: const InputDecoration(labelText: 'Titulo'),
               controller: titleController,
+              onSubmitted: (_) => _submitForm(),
             ),
             TextField(
               decoration: const InputDecoration(labelText: 'Valor (R\$)'),
               controller: valueController,
+              keyboardType: TextInputType.number,
+              onSubmitted: (_) => _submitForm(),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 OutlinedButton(
-                  onPressed: () {
-                    final title = titleController.text;
-                    final value = double.tryParse(valueController.text) ?? 0.0;
-                    widget.onSubmit(title, value);
-                  },
+                  onPressed: _submitForm,
                   child: const Text(
                     'Nova Transaçao',
                     style: TextStyle(color: Colors.purple),
