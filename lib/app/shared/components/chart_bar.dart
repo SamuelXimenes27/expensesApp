@@ -14,15 +14,11 @@ class ExpanseChartBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _size = MediaQuery.of(context).size;
 
     return Column(
       children: <Widget>[
-        SizedBox(
-          height: 20,
-          child: FittedBox(
-            child: Text('R\$${value.toStringAsFixed(2)}'),
-          ),
+        FittedBox(
+            child: Text(value.toStringAsFixed(2))
         ),
         const SizedBox(
           height: 5,
