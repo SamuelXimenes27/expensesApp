@@ -5,13 +5,11 @@ class ExpenseCardGraph extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _size = MediaQuery.of(context).size;
-
-    return Container(
+    return const SizedBox(
       child: Center(
         child: Card(
-          child: Text('Grafico'),
           elevation: 5,
+          child: Text('Grafico'),
         ),
       ),
     );

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class ExpanseChartBar extends StatelessWidget {
-  const ExpanseChartBar({
+class ExpenseChartBar extends StatelessWidget {
+  const ExpenseChartBar({
     Key? key,
     required this.label,
     required this.percentage,
