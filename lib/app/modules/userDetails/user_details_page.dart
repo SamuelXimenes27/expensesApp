@@ -184,6 +184,8 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       body: Column(
         children: [
@@ -214,34 +216,40 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         ),
                       ),
                     ),
-                    Expanded(
+                    SizedBox(
+                      height: size.height * 0.2,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
                           _buildCard(
                             title: 'Valor Total Movimentado',
                             value: '€' + totalValueString!,
+                            context: context,
                           ),
                           _buildCard(
                             title: 'Valor Atual + Caixinhas',
                             value: '€' + totalValuePlusHideMoneyString!,
+                            context: context,
                           ),
                           _buildCard(
                             title: 'Transações',
                             value: totalTransactionsString!,
+                            context: context,
                           ),
                           _buildCard(
                             title: 'Depositos',
                             value: totalDeposits!,
+                            context: context,
                           ),
                           _buildCard(
                             title: 'Compras',
                             value: totalBuys!,
+                            context: context,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const Expanded(child: SizedBox(height: 16)),
                     const Align(
                       alignment: Alignment.bottomLeft,
                       child: Padding(
@@ -295,7 +303,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
   }
 }
 
-Widget _buildCard({required String title, required String value}) {
+Widget _buildCard({
+  required String title,
+  required String value,
+  required BuildContext context,
+}) {
   return SizedBox(
     width: 120,
     child: Card(
