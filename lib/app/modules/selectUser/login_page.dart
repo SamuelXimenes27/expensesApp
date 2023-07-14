@@ -68,6 +68,8 @@ class _LoginUserPageState extends State<LoginUserPage> {
       if (credential.user != null) {
         _saveEmail(emailAddressController!.text);
       }
+
+      Navigator.pushReplacementNamed(context, RoutesConst.home);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         debugPrint('No user found for that email.');
