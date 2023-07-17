@@ -1,6 +1,6 @@
 import 'package:expenses/app/app_widget.dart';
-import 'package:expenses/app/modules/selectUser/login_page.dart';
-import 'package:expenses/app/modules/selectUser/register_page.dart';
+import 'package:expenses/app/modules/login/login_page.dart';
+import 'package:expenses/app/modules/register/register_page.dart';
 import 'package:flutter/material.dart';
 
 class RoutesConst {

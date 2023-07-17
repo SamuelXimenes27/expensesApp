@@ -1,9 +1,11 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expenses/app/modules/home/components/filter_cards.dart';
 import 'package:expenses/app/shared/widgets/appbar/appbar_title_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import '../../models/transaction.dart';
 import 'components/card_expense_money.dart';
 import 'components/card_expense_list.dart';
 
@@ -15,6 +17,10 @@ class ExpenseHomePage extends StatefulWidget {
 }
 
 class _ExpenseHomePageState extends State<ExpenseHomePage> {
+  Query? collectionsInstance;
+  String? documentId;
+  String? transactionsCollectionReference;
+
   @override
   void initState() {
     super.initState();
@@ -22,55 +28,26 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
   }
 
   Future<void> _fetchTransactions() async {
-    final collectionRef =
-        FirebaseFirestore.instance.collection('transactionCollection');
+    User? user = FirebaseAuth.instance.currentUser;
+    String? userUID = user?.uid;
 
-    final querySnapshot =
-        await collectionRef.orderBy('createdAt', descending: true).get();
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('transactionsProduction')
+        .where('allowedUsers', arrayContainsAny: [userUID]).get();
 
-    final transactions = querySnapshot.docs.map((doc) {
-      final data = doc.data();
+    if (querySnapshot.docs.isNotEmpty) {
+      documentId = querySnapshot.docs.first.id;
+      log(documentId!);
 
-      final id = doc.id;
-      final title = data['title'] as String;
-      final value = data['value'] as double;
-      final createdAt = data['createdAt'] as Timestamp;
-
-      DateTime date;
-      // ignore: unnecessary_null_comparison
-      if (createdAt != null) {
-        date = createdAt.toDate();
-      } else {
-        date = DateTime.now();
-      }
-
-      return TransactionModel(
-        id: id,
-        title: title,
-        value: value,
-        date: date,
-      );
-    }).toList();
-
-    transactions.sort((a, b) => b.date.compareTo(a.date));
+      collectionsInstance = FirebaseFirestore.instance
+          .collection('transactionsProduction')
+          .doc(documentId)
+          .collection('samuel_sabrina_transactionsCollection')
+          .orderBy('date', descending: true);
+    } else {
+      log('Usuário não tem permissão para acessar nenhum item');
+    }
   }
-
-  List<TransactionModel> getRecentTransactions(
-      List<TransactionModel> transactions) {
-    return transactions.where((tr) {
-      return tr.date.isAfter(
-        DateTime.now().subtract(
-          const Duration(days: 7),
-        ),
-      );
-    }).toList();
-  }
-
-  Query<Object?>? collectionsInstance =
-      FirebaseFirestore.instance.collection('transactionCollection').orderBy(
-            'date',
-            descending: true,
-          );
 
   @override
   Widget build(BuildContext context) {
@@ -89,58 +66,55 @@ class _ExpenseHomePageState extends State<ExpenseHomePage> {
                 if (value == 'Geral') {
                   setState(() {
                     collectionsInstance = FirebaseFirestore.instance
-                        .collection('transactionCollection')
-                        .orderBy(
-                          'date',
-                          descending: true,
-                        );
+                        .collection('transactionsProduction')
+                        .doc(documentId)
+                        .collection('samuel_sabrina_transactionsCollection')
+                        .orderBy('date', descending: true);
                   });
                 } else if (value == 'Comida') {
                   setState(() {
                     collectionsInstance = FirebaseFirestore.instance
-                        .collection('transactionCollection')
+                        .collection('transactionsProduction')
+                        .doc(documentId)
+                        .collection('samuel_sabrina_transactionsCollection')
                         .where('type', isEqualTo: 'Comida')
-                        .orderBy(
-                          'date',
-                          descending: true,
-                        );
+                        .orderBy('date', descending: true);
                   });
                 } else if (value == 'Roupa') {
                   setState(() {
                     collectionsInstance = FirebaseFirestore.instance
-                        .collection('transactionCollection')
-                        .orderBy(
-                          'date',
-                          descending: true,
-                        )
-                        .where('type', isEqualTo: 'Roupa');
+                        .collection('transactionsProduction')
+                        .doc(documentId)
+                        .collection('samuel_sabrina_transactionsCollection')
+                        .where('type', isEqualTo: 'Roupa')
+                        .orderBy('date', descending: true);
                   });
                 } else if (value == 'Ganhos') {
                   setState(() {
                     collectionsInstance = FirebaseFirestore.instance
-                        .collection('transactionCollection')
-                        .orderBy(
-                          'date',
-                          descending: true,
-                        )
-                        .where('type', isEqualTo: 'Ganhos');
+                        .collection('transactionsProduction')
+                        .doc(documentId)
+                        .collection('samuel_sabrina_transactionsCollection')
+                        .where('type', isEqualTo: 'Ganhos')
+                        .orderBy('date', descending: true);
                   });
                 } else if (value == 'Outros') {
                   setState(() {
                     collectionsInstance = FirebaseFirestore.instance
-                        .collection('transactionCollection')
-                        .orderBy(
-                          'date',
-                          descending: true,
-                        )
-                        .where('type', isEqualTo: 'Outros');
+                        .collection('transactionsProduction')
+                        .doc(documentId)
+                        .collection('samuel_sabrina_transactionsCollection')
+                        .where('type', isEqualTo: 'Outros')
+                        .orderBy('date', descending: true);
                   });
                 }
               },
             ),
-            ExpenseCardList(
-              expenseCollection: collectionsInstance!,
-            ),
+            if (collectionsInstance != null) ...[
+              ExpenseCardList(
+                expenseCollection: collectionsInstance!,
+              ),
+            ],
           ],
         ),
       ),

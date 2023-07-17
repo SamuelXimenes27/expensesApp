@@ -18,8 +18,7 @@ String capitalizeFirstLetter(String text) {
 }
 
 class ExpenseCardList extends StatefulWidget {
-  // ignore: prefer_typing_uninitialized_variables
-  final expenseCollection;
+  final Query expenseCollection;
 
   const ExpenseCardList({Key? key, required this.expenseCollection})
       : super(key: key);
