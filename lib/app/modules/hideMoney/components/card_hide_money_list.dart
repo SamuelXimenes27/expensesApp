@@ -118,12 +118,9 @@ class _HideMoneyListCardsState extends State<HideMoneyListCards> {
 
                   for (final transaction in transactions) {
                     final transactionData = transaction as Map<String, dynamic>;
-                    final type = transactionData['type'] as String;
 
-                    if (type == "add") {
-                      final value = transactionData['value'];
-                      totalValue += value;
-                    }
+                    final value = transactionData['value'];
+                    totalValue += value;
                   }
 
                   final cardColorIndex = index % cardColors.length;

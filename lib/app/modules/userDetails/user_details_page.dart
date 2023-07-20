@@ -111,14 +111,11 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
         for (final transaction in transactions) {
           final transactionData = transaction as Map<String, dynamic>;
-          final type = transactionData['type'] as String;
 
-          if (type == 'add') {
-            final value = transactionData['value'];
-            setState(() {
-              hideMoneyValue += value;
-            });
-          }
+          final value = transactionData['value'];
+          setState(() {
+            hideMoneyValue += value;
+          });
         }
       }
     }
