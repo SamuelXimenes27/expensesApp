@@ -135,7 +135,7 @@ class _CustomBottomSheetFormState extends State<CustomBottomSheetForm> {
       Navigator.pop(context);
     } else if (isHideMoneyTransaction == true) {
       await updateDataHideMoneyFirestore(
-        value,
+        adjustedValue,
         _isExpense ? 'remove' : 'add',
       );
       Navigator.pop(context);

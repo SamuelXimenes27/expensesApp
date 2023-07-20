@@ -114,17 +114,23 @@ class _HideMoneyListCardsState extends State<HideMoneyListCards> {
                   final transactions =
                       collectionData['transactions'] as List<dynamic>;
 
-                  double totalValue = 0;
-
                   for (final transaction in transactions) {
                     final transactionData = transaction as Map<String, dynamic>;
                     final type = transactionData['type'] as String;
 
                     if (type == "add") {
                       final value = transactionData['value'];
-                      totalValue += value;
                     }
                   }
+
+                  final documentData =
+                      hideMoneyDocs[index].data() as Map<String, dynamic>;
+                  final transactionsValue =
+                      documentData['transactions'] as List<dynamic>;
+                  final double totalValuePerItem = transactionsValue.fold(
+                    0,
+                    (sum, transaction) => sum + transaction['value'],
+                  );
 
                   final cardColorIndex = index % cardColors.length;
                   final cardColor = cardColors[cardColorIndex];
@@ -192,7 +198,7 @@ class _HideMoneyListCardsState extends State<HideMoneyListCards> {
                                 ),
                                 const SizedBox(height: 8),
                                 Text(
-                                  'Valor guardado: €${totalValue.toInt().toStringAsFixed(2)}',
+                                  'Valor guardado: €${totalValuePerItem.toInt().toStringAsFixed(2)}',
                                   style: const TextStyle(
                                     fontSize: 16,
                                     color: Colors.grey,
