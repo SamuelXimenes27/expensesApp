@@ -1,8 +1,8 @@
 import 'package:expenses/app/shared/constants/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../bloc/user_authentication_bloc.dart';
 import '../../shared/constants/strings.dart';
 
 class LoginUserPage extends StatefulWidget {
@@ -13,6 +13,7 @@ class LoginUserPage extends StatefulWidget {
 }
 
 class _LoginUserPageState extends State<LoginUserPage> {
+  final authenticationBloc = AuthenticationBloC();
   final loginFormController = GlobalKey<FormState>();
   TextEditingController? emailAddressController = TextEditingController();
   TextEditingController? passwordController = TextEditingController();
@@ -50,35 +51,12 @@ class _LoginUserPageState extends State<LoginUserPage> {
     });
   }
 
-  void _saveEmail(String value) async {
+  _saveEmail(String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       email = value;
       prefs.setString('email', email);
     });
-  }
-
-  signIn() async {
-    try {
-      final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailAddressController!.text,
-        password: passwordController!.text,
-      );
-
-      if (credential.user != null) {
-        _saveEmail(emailAddressController!.text);
-      }
-
-      Navigator.pushReplacementNamed(context, RoutesConst.home);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        debugPrint('No user found for that email.');
-        noUserFound = true;
-      } else if (e.code == 'wrong-password') {
-        debugPrint('Wrong password provided for that user.');
-        wrongPassword = true;
-      }
-    }
   }
 
   @override
@@ -192,7 +170,15 @@ class _LoginUserPageState extends State<LoginUserPage> {
                           color: Colors.white,
                           onPressed: () async {
                             if (loginFormController.currentState!.validate()) {
-                              await signIn();
+                              await authenticationBloc.signIn(
+                                userEmail: emailAddressController!.text,
+                                userPassword: passwordController!.text,
+                                noUserFoundError: noUserFound,
+                                wrongPasswordError: wrongPassword,
+                                context: context,
+                                saveEmailFunction: () =>
+                                    _saveEmail(emailAddressController!.text),
+                              );
                             }
                           },
                           icon: const Icon(Icons.arrow_forward),

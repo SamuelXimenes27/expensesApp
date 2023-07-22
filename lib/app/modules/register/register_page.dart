@@ -1,6 +1,6 @@
+import 'package:expenses/app/bloc/user_authentication_bloc.dart';
 import 'package:expenses/app/shared/constants/colors.dart';
 import 'package:expenses/app/shared/constants/routes.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../../shared/constants/strings.dart';
@@ -13,6 +13,7 @@ class RegisterUserPage extends StatefulWidget {
 }
 
 class _RegisterUserPageState extends State<RegisterUserPage> {
+  final authenticationBloc = AuthenticationBloC();
   final registerFormController = GlobalKey<FormState>();
   TextEditingController? usernameController = TextEditingController();
   TextEditingController? emailAddressController = TextEditingController();
@@ -20,28 +21,6 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
 
   bool isWeakPassword = false;
   bool emailAlreadyUsed = false;
-
-  signUp() async {
-    try {
-      UserCredential userCredential =
-          await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: emailAddressController!.text,
-        password: passwordController!.text,
-      );
-
-      await userCredential.user!.updateDisplayName(usernameController!.text);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'weak-password') {
-        debugPrint('The password provided is too weak.');
-        isWeakPassword = true;
-      } else if (e.code == 'email-already-in-use') {
-        debugPrint('The account already exists for that email.');
-        emailAlreadyUsed = true;
-      }
-    } catch (e) {
-      print(e);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +140,13 @@ class _RegisterUserPageState extends State<RegisterUserPage> {
                             onPressed: () {
                               if (registerFormController.currentState!
                                   .validate()) {
-                                signUp();
+                                authenticationBloc.signUp(
+                                  userEmail: emailAddressController!.text,
+                                  userPassword: passwordController!.text,
+                                  userName: usernameController!.text,
+                                  weakPasswordError: isWeakPassword,
+                                  emailAlreadyUserError: emailAlreadyUsed,
+                                );
                                 Navigator.pushReplacementNamed(
                                     context, RoutesConst.home);
                               }
